@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cadastro CETIP — Warren</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --surface2: #181b22;
+  --surface3: #1e2229;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0f2f5;
+  --text2: #8b93a5;
+  --text3: #555d6e;
+  --accent: #e8b84b;
+  --accent2: #c99d35;
+  --green: #2ecc8a;
+  --green-bg: rgba(46,204,138,0.1);
+  --green-border: rgba(46,204,138,0.25);
+  --red: #f05c5c;
+  --red-bg: rgba(240,92,92,0.1);
+  --red-border: rgba(240,92,92,0.25);
+  --amber: #f0a844;
+  --amber-bg: rgba(240,168,68,0.1);
+  --amber-border: rgba(240,168,68,0.25);
+  --blue: #5b9cf6;
+  --blue-bg: rgba(91,156,246,0.1);
+  --blue-border: rgba(91,156,246,0.25);
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* layout */
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+.main{padding:32px 36px;overflow-y:auto}
+
+/* sidebar */
+.brand{display:flex;align-items:center;gap:10px;padding:8px 12px;margin-bottom:20px}
+.brand-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.brand-icon svg{width:16px;height:16px;fill:var(--bg)}
+.brand-name{font-size:13px;font-weight:600;letter-spacing:0.02em;color:var(--text)}
+.brand-sub{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace}
+.nav-label{font-size:10px;font-weight:600;letter-spacing:0.1em;color:var(--text3);text-transform:uppercase;padding:16px 12px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius);cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.15s;border:1px solid transparent;text-decoration:none}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--surface3);color:var(--text);border-color:var(--border)}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;opacity:0.7}
+.nav-item.active svg{opacity:1}
+.nav-badge{margin-left:auto;background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border);font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;font-family:'DM Mono',monospace}
+.sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid var(--border);font-size:11px;color:var(--text3)}
+.sidebar-footer span{color:var(--text2);font-weight:500}
+
+/* header */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px}
+.page-title{font-size:22px;font-weight:600;letter-spacing:-0.02em;color:var(--text)}
+.page-sub{font-size:13px;color:var(--text3);margin-top:3px;font-family:'DM Mono',monospace}
+.btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 16px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;border:none}
+.btn-primary{background:var(--accent);color:var(--bg);font-weight:600}
+.btn-primary:hover{background:var(--accent2)}
+.btn-secondary{background:var(--surface3);color:var(--text2);border:1px solid var(--border)}
+.btn-secondary:hover{color:var(--text);border-color:var(--border2)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--surface2);color:var(--text)}
+.btn-success{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.btn-danger{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.btn svg{width:14px;height:14px}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px}
+.stat-label{font-size:11px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
+.stat-val{font-size:28px;font-weight:600;letter-spacing:-0.03em;color:var(--text);font-family:'DM Mono',monospace}
+.stat-sub{font-size:11px;margin-top:4px;display:flex;align-items:center;gap:4px}
+.stat-up{color:var(--green)}
+.stat-warn{color:var(--amber)}
+.stat-muted{color:var(--text3)}
+
+/* panes */
+.pane{display:none}
+.pane.active{display:block}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px 24px;margin-bottom:16px}
+.card-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:18px}
+
+/* stepper */
+.stepper{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.step-item{display:flex;align-items:center;gap:8px;flex:1}
+.step-item:last-child{flex:none}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;font-family:'DM Mono',monospace;transition:all 0.3s}
+.step-pending .step-circle{background:var(--surface3);color:var(--text3);border:1px solid var(--border)}
+.step-active .step-circle{background:var(--accent);color:var(--bg)}
+.step-done .step-circle{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.step-label{font-size:12px;font-weight:500;transition:color 0.3s}
+.step-pending .step-label{color:var(--text3)}
+.step-active .step-label{color:var(--text)}
+.step-done .step-label{color:var(--green)}
+.step-line{flex:1;height:1px;background:var(--border);margin:0 8px}
+
+/* form */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.gfull{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+.field input,.field select{height:38px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;transition:border-color 0.15s;outline:none;-webkit-appearance:none}
+.field input::placeholder{color:var(--text3)}
+.field input:focus,.field select:focus{border-color:var(--accent);background:var(--surface3)}
+.field select option{background:var(--surface2)}
+.mono-hint{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px}
+.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+
+/* preview */
+.preview{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.preview-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border)}
+.preview-row:last-child{border-bottom:none}
+.preview-key{font-size:12px;color:var(--text3);font-weight:500}
+.preview-val{font-size:12px;color:var(--text);font-weight:500;text-align:right;font-family:'DM Mono',monospace}
+
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;font-family:'DM Mono',monospace}
+.b-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.b-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.b-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.b-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border)}
+.b-gray{background:var(--surface3);color:var(--text3);border:1px solid var(--border)}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.dot-green{background:var(--green)}
+.dot-red{background:var(--red)}
+.dot-amber{background:var(--amber)}
+.dot-blue{background:var(--blue)}
+
+/* table */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:var(--surface2);color:var(--text)}
+.td-name{color:var(--text);font-weight:500}
+.td-mono{font-family:'DM Mono',monospace;font-size:12px}
+.row-btns{display:flex;gap:6px}
+.row-btn{height:26px;padding:0 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--text3);transition:all 0.15s}
+.row-btn:hover{border-color:var(--border2);color:var(--text);background:var(--surface3)}
+
+/* search + filters */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.search-wrap{flex:1;position:relative}
+.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--text3)}
+.search-input{width:100%;height:36px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px 0 36px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.15s}
+.search-input:focus{border-color:var(--accent)}
+.search-input::placeholder{color:var(--text3)}
+.filters{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.filter-pill{height:28px;padding:0 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:transparent;border:1px solid var(--border);color:var(--text3);transition:all 0.15s}
+.filter-pill:hover{border-color:var(--border2);color:var(--text)}
+.filter-pill.active{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:600}
+
+/* timeline */
+.timeline{display:flex;flex-direction:column}
+.tl-row{display:flex;gap:14px;padding:10px 0;position:relative}
+.tl-row:not(:last-child)::before{content:'';position:absolute;left:7px;top:28px;bottom:-2px;width:1px;background:var(--border)}
+.tl-dot{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:3px;border:2px solid}
+.tl-green{background:var(--green-bg);border-color:var(--green)}
+.tl-blue{background:var(--blue-bg);border-color:var(--blue)}
+.tl-red{background:var(--red-bg);border-color:var(--red)}
+.tl-amber{background:var(--amber-bg);border-color:var(--amber)}
+.tl-body{flex:1}
+.tl-title{font-size:13px;font-weight:500;color:var(--text)}
+.tl-meta{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px}
+
+/* info / warn bars */
+.info-bar{background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:16px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.warn-bar{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--amber);margin-bottom:16px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.success-state{text-align:center;padding:32px 20px}
+.success-check{width:56px;height:56px;border-radius:50%;background:var(--green-bg);border:2px solid var(--green-border);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px}
+.success-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:6px}
+.success-sub{font-size:13px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:20px}
+
+/* reports */
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;cursor:pointer;transition:all 0.2s}
+.report-card:hover{border-color:var(--accent);background:var(--surface2)}
+.report-card:hover .report-arrow{color:var(--accent)}
+.report-icon-wrap{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
+.report-card h3{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.report-card p{font-size:12px;color:var(--text3);line-height:1.6}
+.report-arrow{font-size:18px;color:var(--text3);transition:color 0.2s;float:right;margin-top:-28px}
+
+/* divider */
+hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+/* loading pulse */
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+.loading{animation:pulse 1.5s infinite}
+
+/* scrollable table wrapper */
+.card-table{padding:0}
+.card-table .card-title{padding:20px 24px 0;margin-bottom:0}
+.card-table table{margin-top:0}
+.card-table thead th:first-child{padding-left:24px}
+.card-table tbody td:first-child{padding-left:24px}
+.card-table thead th:last-child{padding-right:24px}
+.card-table tbody td:last-child{padding-right:24px}
+.table-toolbar{padding:16px 24px;display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--border)}
+.table-filters{padding:12px 24px;border-bottom:1px solid var(--border);display:flex;gap:6px}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Warren</div>
+        <div class="brand-sub">CETIP · Balcão</div>
+      </div>
+    </div>
+
+    <div class="nav-label">Principal</div>
+    <a class="nav-item active" onclick="nav('nova',this)" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Nova demanda
+    </a>
+    <a class="nav-item" onclick="nav('consulta',this)" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Consulta
+    </a>
+    <a class="nav-item" onclick="nav('backoffice',this)" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Fila backoffice
+      <span class="nav-badge">3</span>
+    </a>
+
+    <div class="nav-label">Análise</div>
+    <a class="nav-item" onclick="nav('relatorio',this)" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Relatórios
+    </a>
+
+    <div class="sidebar-footer">
+      Conectado como<br/><span>backoffice@warren.com</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- STATS (always visible) -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Concluídos hoje</div>
+        <div class="stat-val">47</div>
+        <div class="stat-sub stat-up">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+          +12 vs ontem
+        </div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Em processamento</div>
+        <div class="stat-val">8</div>
+        <div class="stat-sub stat-muted">aguardando CETIP</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Fila backoffice</div>
+        <div class="stat-val" style="color:var(--amber)">3</div>
+        <div class="stat-sub stat-warn">intervenção manual</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Taxa de sucesso</div>
+        <div class="stat-val">94%</div>
+        <div class="stat-sub stat-muted">últimos 7 dias</div>
+      </div>
+    </div>
+
+    <!-- ===== NOVA DEMANDA ===== -->
+    <div id="pane-nova" class="pane active">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Nova demanda</div>
+          <div class="page-sub">Sinacor → B3 Balcão NoMe</div>
+        </div>
+      </div>
+
+      <div class="stepper" id="stepper">
+        <div class="step-item step-active" id="s1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Identificação</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item step-pending" id="s2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Dados Sinacor</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item step-pending" id="s3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Envio CETIP</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item step-pending" id="s4">
+          <div class="step-circle">4</div>
+          <span class="step-label">Concluído</span>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div id="step1">
+        <div class="card">
+          <div class="card-title">Identificação do cliente</div>
+          <div class="info-bar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Informe o código Sinacor <strong>ou</strong> CPF. Os dados do cliente serão extraídos automaticamente.
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label>Código Sinacor</label>
+              <input type="text" id="inp-sinacor" placeholder="0012345" oninput="chkBtn()"/>
+              <span class="mono-hint">sinacorCode</span>
+            </div>
+            <div class="field">
+              <label>ou CPF</label>
+              <input type="text" id="inp-cpf" placeholder="000.000.000-00" oninput="chkBtn()"/>
+              <span class="mono-hint">investorTaxId</span>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-secondary" onclick="clearForm()">Limpar</button>
+            <button class="btn btn-primary" id="btn-buscar" onclick="buscar()" disabled style="opacity:.4">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Buscar no Sinacor
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="step2" style="display:none">
+        <div class="card">
+          <div class="card-title">Dados extraídos — Sinacor</div>
+          <div class="info-bar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><polyline points="20 6 9 17 4 12"/></svg>
+            Dados carregados com sucesso. Confirme antes de enviar para a CETIP.
+          </div>
+          <div class="preview">
+            <div class="preview-row"><span class="preview-key">Nome</span><span class="preview-val">João Carlos Almeida</span></div>
+            <div class="preview-row"><span class="preview-key">CPF</span><span class="preview-val">123.456.789-00</span></div>
+            <div class="preview-row"><span class="preview-key">Data de nascimento</span><span class="preview-val">14/03/1985</span></div>
+            <div class="preview-row"><span class="preview-key">Nacionalidade</span><span class="preview-val">BRA</span></div>
+            <div class="preview-row"><span class="preview-key">Documento</span><span class="preview-val">RG · 24.567.891-2 · SSP/SP</span></div>
+            <div class="preview-row"><span class="preview-key">Endereço</span><span class="preview-val">R. das Flores, 142 — SP · 01310-100</span></div>
+            <div class="preview-row"><span class="preview-key">Código Sinacor</span><span class="preview-val">0012345</span></div>
+            <div class="preview-row"><span class="preview-key">Participante B3</span><span class="preview-val">549300ABCD1234567890</span></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-ghost" onclick="goStep(1)">← Voltar</button>
+            <button class="btn btn-primary" onclick="enviar()">
+              Enviar para CETIP →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="step3" style="display:none">
+        <div class="card">
+          <div class="card-title">Enviando para CETIP</div>
+          <div class="timeline">
+            <div class="tl-row"><div class="tl-dot tl-green"></div><div class="tl-body"><div class="tl-title">Autenticação B3 — OAuth 2.0</div><div class="tl-meta">Token obtido · exp 12h · 09:42:11</div></div></div>
+            <div class="tl-row"><div class="tl-dot tl-green"></div><div class="tl-body"><div class="tl-title">Payload montado</div><div class="tl-meta">POST natural-investors/residents · CPF 123.456.789-00</div></div></div>
+            <div class="tl-row" id="tl-attempt"><div class="tl-dot tl-blue loading"></div><div class="tl-body"><div class="tl-title">Tentativa 1 / 3</div><div class="tl-meta">Aguardando resposta da API B3...</div></div></div>
+            <div class="tl-row" id="tl-ok" style="display:none"><div class="tl-dot tl-green"></div><div class="tl-body"><div class="tl-title">Cadastro confirmado · HTTP 201</div><div class="tl-meta">investorId: INV-2024-047821 · 09:42:14</div></div></div>
+          </div>
+          <div class="form-actions" id="step3-actions" style="display:none">
+            <button class="btn btn-primary" onclick="goStep(4)">Ver resultado →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div id="step4" style="display:none">
+        <div class="card">
+          <div class="success-state">
+            <div class="success-check">✓</div>
+            <div class="success-title">João Carlos Almeida cadastrado</div>
+            <div class="success-sub">ID CETIP: INV-2024-047821 · Notificação enviada no Slack</div>
+            <div style="display:flex;gap:8px;justify-content:center">
+              <button class="btn btn-ghost" onclick="reset()">+ Nova demanda</button>
+              <button class="btn btn-primary" onclick="nav('consulta',null)">Ver em consultas →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CONSULTA ===== -->
+    <div id="pane-consulta" class="pane">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Consulta</div>
+          <div class="page-sub">Histórico de cadastros</div>
+        </div>
+        <button class="btn btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar
+        </button>
+      </div>
+      <div class="card card-table">
+        <div class="table-toolbar">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input class="search-input" placeholder="Buscar por nome, CPF, Sinacor ou ID CETIP..." oninput="filterTbl(this.value)"/>
+          </div>
+        </div>
+        <div class="table-filters">
+          <button class="filter-pill active" onclick="filterStatus('todos',this)">Todos</button>
+          <button class="filter-pill" onclick="filterStatus('concluido',this)">Concluídos</button>
+          <button class="filter-pill" onclick="filterStatus('processando',this)">Processando</button>
+          <button class="filter-pill" onclick="filterStatus('falha',this)">Falha</button>
+          <button class="filter-pill" onclick="filterStatus('backoffice',this)">Backoffice</button>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Cliente</th><th>CPF / Sinacor</th><th>ID CETIP</th><th>Data</th><th>Status</th><th></th>
+            </tr></thead>
+            <tbody id="tbl-body">
+              <tr data-s="concluido"><td class="td-name">João Carlos Almeida</td><td class="td-mono">123.456.789-00 / 0012345</td><td class="td-mono">INV-2024-047821</td><td style="color:var(--text3);font-size:12px">15/04 09:42</td><td><span class="badge b-green"><span class="dot dot-green"></span>Concluído</span></td><td><div class="row-btns"><button class="row-btn">Ver</button></div></td></tr>
+              <tr data-s="concluido"><td class="td-name">Maria Fernanda Costa</td><td class="td-mono">987.654.321-00 / 0098712</td><td class="td-mono">INV-2024-047820</td><td style="color:var(--text3);font-size:12px">15/04 09:10</td><td><span class="badge b-green"><span class="dot dot-green"></span>Concluído</span></td><td><div class="row-btns"><button class="row-btn">Ver</button></div></td></tr>
+              <tr data-s="processando"><td class="td-name">Roberto Souza Lima</td><td class="td-mono">456.123.789-00 / 0054321</td><td class="td-mono">—</td><td style="color:var(--text3);font-size:12px">15/04 10:01</td><td><span class="badge b-blue"><span class="dot dot-blue"></span>Processando</span></td><td><div class="row-btns"><button class="row-btn">Ver</button></div></td></tr>
+              <tr data-s="falha"><td class="td-name">Ana Paula Mendes</td><td class="td-mono">321.654.987-00 / 0011234</td><td class="td-mono">—</td><td style="color:var(--text3);font-size:12px">15/04 08:55</td><td><span class="badge b-red"><span class="dot dot-red"></span>Falha 3/3</span></td><td><div class="row-btns"><button class="row-btn">Ver</button><button class="row-btn" onclick="nav('backoffice',null)" style="color:var(--amber)">Backoffice</button></div></td></tr>
+              <tr data-s="backoffice"><td class="td-name">Carlos Eduardo Nunes</td><td class="td-mono">654.321.123-00 / 0078901</td><td class="td-mono">—</td><td style="color:var(--text3);font-size:12px">14/04 17:30</td><td><span class="badge b-amber"><span class="dot dot-amber"></span>Backoffice</span></td><td><div class="row-btns"><button class="row-btn">Ver</button></div></td></tr>
+              <tr data-s="concluido"><td class="td-name">Luciana Ramos Dias</td><td class="td-mono">111.222.333-44 / 0031298</td><td class="td-mono">INV-2024-047819</td><td style="color:var(--text3);font-size:12px">14/04 16:45</td><td><span class="badge b-green"><span class="dot dot-green"></span>Concluído</span></td><td><div class="row-btns"><button class="row-btn">Ver</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BACKOFFICE ===== -->
+    <div id="pane-backoffice" class="pane">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Fila de backoffice</div>
+          <div class="page-sub">Falhas após 3 tentativas automáticas</div>
+        </div>
+      </div>
+      <div class="warn-bar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Estes cadastros falharam após 3 tentativas automáticas. Intervenção manual necessária.
+      </div>
+      <div class="card card-table">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Cliente</th><th>CPF / Sinacor</th><th>Erro</th><th>Tentativas</th><th>Última tentativa</th><th></th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td class="td-name">Ana Paula Mendes</td>
+                <td class="td-mono">321.654.987-00 / 0011234</td>
+                <td><span style="font-size:12px;color:var(--red)">422 — CPF inconsistente (Receita Federal)</span></td>
+                <td><span class="badge b-red">3 / 3</span></td>
+                <td style="color:var(--text3);font-size:12px">15/04 09:02</td>
+                <td><div class="row-btns"><button class="row-btn">Payload</button><button class="row-btn" style="color:var(--green);border-color:var(--green-border)">Reprocessar</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-name">Carlos Eduardo Nunes</td>
+                <td class="td-mono">654.321.123-00 / 0078901</td>
+                <td><span style="font-size:12px;color:var(--red)">503 — Timeout API B3</span></td>
+                <td><span class="badge b-red">3 / 3</span></td>
+                <td style="color:var(--text3);font-size:12px">14/04 17:35</td>
+                <td><div class="row-btns"><button class="row-btn">Payload</button><button class="row-btn" style="color:var(--green);border-color:var(--green-border)">Reprocessar</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-name">Fernanda Torres</td>
+                <td class="td-mono">789.123.456-00 / 0065432</td>
+                <td><span style="font-size:12px;color:var(--red)">400 — participantCode inválido</span></td>
+                <td><span class="badge b-red">3 / 3</span></td>
+                <td style="color:var(--text3);font-size:12px">14/04 14:20</td>
+                <td><div class="row-btns"><button class="row-btn">Payload</button><button class="row-btn" style="color:var(--green);border-color:var(--green-border)">Reprocessar</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Log de tentativas — Ana Paula Mendes</div>
+        <div class="timeline">
+          <div class="tl-row"><div class="tl-dot tl-red"></div><div class="tl-body"><div class="tl-title">Tentativa 1 — HTTP 422</div><div class="tl-meta">15/04 08:56 · CPF inconsistente na Receita Federal</div></div></div>
+          <div class="tl-row"><div class="tl-dot tl-red"></div><div class="tl-body"><div class="tl-title">Tentativa 2 — HTTP 422</div><div class="tl-meta">15/04 08:58 · Retry automático +2min · mesmo erro</div></div></div>
+          <div class="tl-row"><div class="tl-dot tl-red"></div><div class="tl-body"><div class="tl-title">Tentativa 3 — HTTP 422</div><div class="tl-meta">15/04 09:02 · Retry automático +4min · enviado para fila</div></div></div>
+          <div class="tl-row"><div class="tl-dot tl-amber"></div><div class="tl-body"><div class="tl-title">Enviado para backoffice</div><div class="tl-meta">15/04 09:02 · Notificado em #backoffice-cetip no Slack</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== RELATÓRIOS ===== -->
+    <div id="pane-relatorio" class="pane">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Relatórios</div>
+          <div class="page-sub">Exportação e análise</div>
+        </div>
+      </div>
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-icon-wrap" style="background:var(--blue-bg)">📊</div>
+          <div class="report-arrow">→</div>
+          <h3>Cadastros por período</h3>
+          <p>Concluídos, falhas e backoffice por data. Exportável em CSV ou Excel.</p>
+        </div>
+        <div class="report-card">
+          <div class="report-icon-wrap" style="background:var(--green-bg)">📈</div>
+          <div class="report-arrow">→</div>
+          <h3>Taxa de sucesso / falha</h3>
+          <p>Erros agrupados por código HTTP. Identifique padrões de falha recorrentes.</p>
+        </div>
+        <div class="report-card">
+          <div class="report-icon-wrap" style="background:var(--amber-bg)">⏱</div>
+          <div class="report-arrow">→</div>
+          <h3>SLA de processamento</h3>
+          <p>Tempo médio do Sinacor até confirmação na CETIP por dia e operador.</p>
+        </div>
+        <div class="report-card">
+          <div class="report-icon-wrap" style="background:var(--red-bg)">🗂</div>
+          <div class="report-arrow">→</div>
+          <h3>Fila de backoffice</h3>
+          <p>Pendentes, reprocessados com sucesso e casos em aberto.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Relatório customizado</div>
+        <div class="grid3">
+          <div class="field">
+            <label>Início</label>
+            <input type="text" placeholder="DD/MM/AAAA"/>
+          </div>
+          <div class="field">
+            <label>Fim</label>
+            <input type="text" placeholder="DD/MM/AAAA"/>
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select><option>Todos</option><option>Concluídos</option><option>Falhas</option><option>Backoffice</option></select>
+          </div>
+          <div class="field">
+            <label>Formato</label>
+            <select><option>CSV</option><option>Excel (.xlsx)</option><option>PDF</option></select>
+          </div>
+          <div class="field">
+            <label>Agrupamento</label>
+            <select><option>Por dia</option><option>Por semana</option><option>Por operador Slack</option></select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-ghost">Pré-visualizar</button>
+          <button class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Gerar e baixar
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+function nav(id, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  else {
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
+    });
+  }
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  return false;
+}
+
+function chkBtn() {
+  var s = document.getElementById('inp-sinacor').value.trim();
+  var c = document.getElementById('inp-cpf').value.trim();
+  var btn = document.getElementById('btn-buscar');
+  btn.disabled = !(s || c);
+  btn.style.opacity = (s || c) ? '1' : '.4';
+}
+
+function clearForm() {
+  document.getElementById('inp-sinacor').value = '';
+  document.getElementById('inp-cpf').value = '';
+  chkBtn();
+}
+
+function goStep(n) {
+  [1,2,3,4].forEach(i => document.getElementById('step'+i).style.display = 'none');
+  document.getElementById('step'+n).style.display = 'block';
+  ['s1','s2','s3','s4'].forEach((id, i) => {
+    var el = document.getElementById(id);
+    el.className = 'step-item ' + (i < n-1 ? 'step-done' : i === n-1 ? 'step-active' : 'step-pending');
+  });
+}
+
+function buscar() {
+  var btn = document.getElementById('btn-buscar');
+  btn.textContent = 'Buscando...'; btn.disabled = true; btn.style.opacity = '.6';
+  setTimeout(function() { goStep(2); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Buscar no Sinacor'; btn.disabled = false; btn.style.opacity = '1'; }, 1200);
+}
+
+function enviar() {
+  goStep(3);
+  setTimeout(function() {
+    document.getElementById('tl-ok').style.display = 'flex';
+    document.getElementById('tl-attempt').querySelector('.tl-dot').className = 'tl-dot tl-green';
+    document.getElementById('tl-attempt').querySelector('.tl-dot').classList.remove('loading');
+    document.getElementById('tl-attempt').querySelector('.tl-title').textContent = 'Tentativa 1 / 3 — HTTP 201';
+    document.getElementById('tl-attempt').querySelector('.tl-meta').textContent = '09:42:13 · Sucesso na primeira tentativa';
+    document.getElementById('step3-actions').style.display = 'flex';
+  }, 1800);
+}
+
+function reset() {
+  clearForm();
+  goStep(1);
+}
+
+function filterTbl(q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('#tbl-body tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function filterStatus(s, el) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#tbl-body tr').forEach(tr => {
+    tr.style.display = (s === 'todos' || tr.dataset.s === s) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
