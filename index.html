@@ -1,271 +1,191 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Warren — CETIP Gateway</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro B3 / CETIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0c10; --surface: #111318; --surface2: #181b22; --surface3: #1e2229;
-            --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
-            --text: #f0f2f5; --text2: #8b93a5; --text3: #555d6e;
-            --accent: #e8b84b; --accent2: #c99d35; --green: #2ecc8a;
-            --green-bg: rgba(46,204,138,0.1); --red: #f05c5c; --red-bg: rgba(240,92,92,0.1);
-            --amber: #f0a844; --amber-bg: rgba(240,168,68,0.1);
-            --blue: #5b9cf6; --blue-bg: rgba(91,156,246,0.1);
-            --radius: 10px; --radius-lg: 14px;
+            --primary: #000000;
+            --bg: #ffffff;
+            --gray-light: #f5f5f5;
+            --gray-border: #e0e0e0;
+            --text-main: #333333;
+            --text-sub: #666666;
+            --accent-blue: #dbeafe;
+            --text-blue: #1e40af;
+            --success: #16a34a;
         }
-        *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-main); padding: 40px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logo-area { display: flex; align-items: center; gap: 15px; }
+        .logo-icon { width: 45px; height: 45px; background: #e0e7ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .title h1 { font-size: 20px; font-weight: 600; }
+        .title p { font-size: 14px; color: var(--text-sub); }
+        .btn-nova { padding: 10px 20px; border: 1px solid var(--gray-border); border-radius: 12px; background: white; font-weight: 500; cursor: pointer; }
+
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: var(--gray-light); padding: 20px; border-radius: 12px; border: 1px solid transparent; }
+        .stat-label { font-size: 12px; color: var(--text-sub); margin-bottom: 8px; font-weight: 500; }
+        .stat-val { font-size: 28px; font-weight: 600; margin-bottom: 4px; }
+        .stat-desc { font-size: 12px; color: var(--text-sub); }
+        .stat-up { color: var(--success); font-weight: 600; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--gray-border); margin-bottom: 30px; padding-bottom: 1px; }
+        .tab { padding: 12px 25px; border: 1px solid var(--gray-border); border-bottom: none; border-radius: 12px 12px 0 0; background: white; cursor: pointer; color: var(--text-main); font-size: 14px; transition: 0.2s; position: relative; top: 1px; }
+        .tab.active { background: white; border-bottom: 2px solid white; font-weight: 600; box-shadow: 0 -2px 10px rgba(0,0,0,0.03); }
+        .badge { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 5px; }
+
+        /* Stepper */
+        .stepper { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; padding: 0 10px; }
+        .step { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-sub); }
+        .step.active { color: var(--primary); font-weight: 600; }
+        .step-num { width: 24px; height: 24px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .step.active .step-num { background: var(--primary); color: white; }
+        .step-line { flex: 1; height: 1px; background: var(--gray-border); margin: 0 15px; }
+
+        /* Card Content */
+        .content-card { border: 1px solid var(--gray-border); border-radius: 15px; padding: 30px; background: white; }
+        .card-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; color: #444; }
+        .info-box { background: var(--accent-blue); color: var(--text-blue); padding: 15px; border-radius: 10px; font-size: 14px; margin-bottom: 25px; line-height: 1.5; }
         
-        .shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
-        .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px}
-        .main{padding:32px 36px;overflow-y:auto}
+        /* Form */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .input-group label { display: block; font-size: 13px; margin-bottom: 8px; color: var(--text-sub); }
+        input { width: 100%; padding: 12px 15px; border: 1px solid var(--gray-border); border-radius: 10px; font-size: 15px; outline: none; }
+        input:focus { border-color: var(--primary); }
 
-        /* Sidebar */
-        .brand{padding:8px 12px;margin-bottom:20px; border-bottom: 1px solid var(--border); padding-bottom: 20px;}
-        .brand-name{font-size:14px;font-weight:700;color:var(--text); letter-spacing: 1px;}
-        .brand-sub{font-size:10px; color:var(--text3); font-family: 'DM Mono'}
-        .nav-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;padding:16px 12px 6px}
-        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius);cursor:pointer;color:var(--text2);text-decoration:none;transition:0.2s; font-size: 13px;}
-        .nav-item:hover, .nav-item.active{background:var(--surface3);color:var(--text)}
-        .nav-badge{margin-left:auto;background:var(--amber-bg);color:var(--amber);padding:2px 6px;border-radius:10px;font-size:10px}
+        .form-actions { display: flex; justify-content: flex-end; gap: 10px; }
+        .btn { padding: 12px 30px; border-radius: 10px; border: 1px solid var(--gray-border); cursor: pointer; font-size: 14px; font-weight: 500; transition: 0.2s; }
+        .btn-white { background: white; }
+        .btn-primary { background: white; color: #ccc; border-color: #eee; cursor: not-allowed; }
+        .btn-primary.enabled { background: white; color: var(--primary); border-color: var(--gray-border); cursor: pointer; }
 
-        /* Dashboard & Stats */
-        .page-header{display:flex; justify-content: space-between; align-items: center; margin-bottom: 30px;}
-        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
-        .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;cursor:pointer;transition:0.2s}
-        .stat:hover{transform:translateY(-2px);border-color: var(--border2)}
-        .stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;margin-bottom:8px; font-weight: 600;}
-        .stat-val{font-size:24px;font-weight:600;font-family:'DM Mono'}
-
-        /* Stepper (Formulário) */
-        .stepper{display:flex;align-items:center;margin-bottom:30px;gap:10px}
-        .step{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:12px}
-        .step.active{color:var(--accent)}
-        .step.done{color:var(--green)}
-        .step-n{width:24px;height:24px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-weight:600}
-        .step.active .step-n{background:var(--accent);color:var(--bg)}
-        .step.done .step-n{background:var(--green-bg);color:var(--green)}
-        .line{flex:1;height:1px;background:var(--border)}
-
-        /* Panes & Cards */
-        .pane{display:none}
-        .pane.active{display:block}
-        .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px}
-        
-        /* Inputs & Buttons */
-        .field{margin-bottom:15px;display:flex;flex-direction:column;gap:5px}
-        .field label{font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:600}
-        input, select{height:42px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;color:var(--text);outline:none; width: 100%;}
-        input:focus{border-color:var(--accent)}
-
-        .btn{padding:10px 20px;border-radius:var(--radius);border:none;cursor:pointer;font-weight:600;transition:0.2s; display: inline-flex; align-items: center; gap: 8px;}
-        .btn-primary{background:var(--accent);color:var(--bg)}
-        .btn-secondary{background:var(--surface3);color:var(--text2)}
-        
-        /* Table Style */
-        table{width:100%;border-collapse:collapse}
-        thead th{text-align:left;padding:12px;font-size:10px;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)}
-        tbody td{padding:12px;border-bottom:1px solid var(--border);color:var(--text2);font-size:13px}
-        .badge{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:600; font-family: 'DM Mono';}
-        .b-green{background:var(--green-bg);color:var(--green)}
-        .b-red{background:var(--red-bg);color:var(--red)}
-
-        /* Timeline / Logs */
-        .tl-item{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border)}
-        .tl-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
-        .tl-success{background:var(--green)}.tl-info{background:var(--blue)}.tl-danger{background:var(--red)}
+        .pane { display: none; }
+        .pane.active { display: block; }
     </style>
 </head>
 <body>
 
-<div class="shell">
-  <aside class="sidebar">
-    <div class="brand">
-        <div class="brand-name">WARREN</div>
-        <div class="brand-sub">GATEWAY CETIP</div>
-    </div>
-    
-    <div class="nav-label">Main</div>
-    <a class="nav-item active" id="nav-dashboard" onclick="nav('dashboard',this)">Dashboard</a>
-    <a class="nav-item" id="nav-consulta" onclick="nav('consulta',this)">Consulta</a>
-    <a class="nav-item" id="nav-backoffice" onclick="nav('backoffice',this)">Backoffice <span class="nav-badge" id="backoffice-count">3</span></a>
-  </aside>
-
-  <main class="main">
-    
-    <div id="pane-dashboard" class="pane active">
-      <div class="page-header">
-        <div>
-            <h2 style="font-size: 24px;">Dashboard</h2>
-            <p style="color: var(--text3)">Visão geral das integrações Sinacor → B3</p>
+<div class="container">
+    <div class="header">
+        <div class="logo-area">
+            <div class="logo-icon">🏛️</div>
+            <div class="title">
+                <h1>Cadastro B3 / CETIP</h1>
+                <p>Integração Sinacor → Balcão NoMe</p>
+            </div>
         </div>
-        <button class="btn btn-primary" onclick="openNovaDemanda()">+ Nova Demanda</button>
-      </div>
-
-      <div class="stats">
-        <div class="stat" onclick="nav('consulta'); filterStatus('concluido')">
-          <div class="stat-label">Concluídos Hoje</div>
-          <div class="stat-val">47</div>
-        </div>
-        <div class="stat" onclick="nav('consulta'); filterStatus('processando')">
-          <div class="stat-label">Processando</div>
-          <div class="stat-val">8</div>
-        </div>
-        <div class="stat" onclick="nav('backoffice')">
-          <div class="stat-label">Fila Backoffice</div>
-          <div class="stat-val" style="color:var(--amber)">3</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Sucesso</div>
-          <div class="stat-val">94%</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin-bottom: 15px; font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px;">Atividades Recentes</h3>
-        <table>
-            <thead><tr><th>Cliente</th><th>Documento</th><th>Horário</th><th>Status</th></tr></thead>
-            <tbody>
-                <tr><td class="td-name">João Carlos Almeida</td><td>123.***.***-00</td><td>09:42</td><td><span class="badge b-green">Sucesso</span></td></tr>
-                <tr><td class="td-name">Maria Fernanda Costa</td><td>987.***.***-00</td><td>09:10</td><td><span class="badge b-green">Sucesso</span></td></tr>
-            </tbody>
-        </table>
-      </div>
+        <button class="btn-nova" onclick="switchTab('nova')">+ Nova demanda</button>
     </div>
 
-    <div id="pane-nova" class="pane">
-      <div class="page-header">
-        <h2 style="font-size: 24px;">Nova Demanda Manual</h2>
-        <button class="btn btn-secondary" onclick="nav('dashboard')">Cancelar</button>
-      </div>
-
-      <div class="stepper">
-        <div class="step active" id="s1"><div class="step-n">1</div> Identificação</div>
-        <div class="line"></div>
-        <div class="step" id="s2"><div class="step-n">2</div> Dados Sinacor</div>
-        <div class="line"></div>
-        <div class="step" id="s3"><div class="step-n">3</div> Envio CETIP</div>
-      </div>
-
-      <div id="step1" class="card">
-        <h3 style="margin-bottom: 20px;">Identificação do Cliente</h3>
-        <p style="color: var(--text3); margin-bottom: 20px;">Informe o código Sinacor ou CPF para extrair os dados automaticamente.</p>
-        <div class="field">
-          <label>ID Sinacor ou CPF</label>
-          <input type="text" id="id-input" placeholder="Ex: 0012345 ou 123.456.789-00">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Concluídos hoje</div>
+            <div class="stat-val">47</div>
+            <div class="stat-desc"><span class="stat-up">▲ 12 vs ontem</span></div>
         </div>
-        <button class="btn btn-primary" onclick="toStep(2)">Buscar no Sinacor</button>
-      </div>
-
-      <div id="step2" class="card" style="display:none">
-        <h3>Dados Encontrados</h3>
-        <div style="background:var(--surface2); padding:20px; border-radius:10px; margin:20px 0; line-height: 2;">
-          <p><strong>Nome:</strong> João Carlos Almeida</p>
-          <p><strong>CPF:</strong> 123.456.789-00</p>
-          <p><strong>Endereço:</strong> Rua das Flores, 142 - SP</p>
-          <p><strong>Participante B3:</strong> 549300ABCD12345</p>
+        <div class="stat-card">
+            <div class="stat-label">Em processamento</div>
+            <div class="stat-val">8</div>
+            <div class="stat-desc">aguardando CETIP</div>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn btn-secondary" onclick="toStep(1)">Voltar</button>
-            <button class="btn btn-primary" onclick="toStep(3)">Confirmar e Enviar</button>
+        <div class="stat-card">
+            <div class="stat-label">Fila backoffice</div>
+            <div class="stat-val">3</div>
+            <div class="stat-desc">após 3 tentativas</div>
         </div>
-      </div>
-
-      <div id="step3" class="card" style="display:none; padding: 40px; text-align: center;">
-        <div style="font-size:50px; color:var(--green); margin-bottom: 20px;">✓</div>
-        <h3>Registro Concluído</h3>
-        <p style="color:var(--text3)">O comitente foi registrado no Balcão NoMe.</p>
-        <p style="font-family: 'DM Mono'; margin-top: 10px;">ID CETIP: INV-2024-X92</p>
-        <button class="btn btn-primary" style="margin-top:30px" onclick="openNovaDemanda()">Novo Registro</button>
-      </div>
+        <div class="stat-card">
+            <div class="stat-label">Taxa de sucesso</div>
+            <div class="stat-val">94%</div>
+            <div class="stat-desc">últimos 7 dias</div>
+        </div>
     </div>
 
-    <div id="pane-consulta" class="pane">
-        <div class="card card-table">
-            <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="font-size: 14px; text-transform: uppercase;">Histórico de Consultas</h3>
-                <div style="display: flex; gap: 10px;">
-                    <input type="date" class="date-input" style="width: auto; height: 32px;">
-                    <input type="text" placeholder="Filtrar..." style="width: 150px; height: 32px;" oninput="filterTbl(this.value)">
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('nova', this)">Nova demanda</button>
+        <button class="tab" onclick="switchTab('consulta', this)">Consulta</button>
+        <button class="tab" onclick="switchTab('backoffice', this)">Fila backoffice <span class="badge">3</span></button>
+        <button class="tab" onclick="switchTab('relatorios', this)">Relatórios</button>
+    </div>
+
+    <div id="pane-nova" class="pane active">
+        <div class="stepper">
+            <div class="step active"><div class="step-num">1</div> Identificação</div>
+            <div class="step-line"></div>
+            <div class="step"><div class="step-num">2</div> Dados Sinacor</div>
+            <div class="step-line"></div>
+            <div class="step"><div class="step-num">3</div> Envio CETIP</div>
+            <div class="step-line"></div>
+            <div class="step"><div class="step-num">4</div> Concluído</div>
+        </div>
+
+        <div class="content-card">
+            <div class="card-title">Identificação do cliente</div>
+            <div class="info-box">
+                ℹ Este formulário é aberto pelo bot no Slack. Informe o código Sinacor ou CPF — os dados serão extraídos automaticamente.
+            </div>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label>Código Sinacor</label>
+                    <input type="text" placeholder="Ex: 0012345" oninput="validateForm()">
+                </div>
+                <div class="input-group">
+                    <label>ou CPF</label>
+                    <input type="text" placeholder="000.000.000-00" oninput="validateForm()">
                 </div>
             </div>
-            <table>
-                <thead><tr><th>Cliente</th><th>Documento / Sinacor</th><th>Data</th><th>Status</th></tr></thead>
-                <tbody id="tbl-body">
-                    <tr data-s="concluido"><td>João Carlos Almeida</td><td style="font-family: 'DM Mono'">123.456.789-00 / 0012345</td><td>15/04/2024</td><td><span class="badge b-green">Concluído</span></td></tr>
-                    <tr data-s="processando"><td>Roberto Souza Lima</td><td style="font-family: 'DM Mono'">456.123.789-00 / 0054321</td><td>15/04/2024</td><td><span class="badge b-blue">Processando</span></td></tr>
-                </tbody>
-            </table>
+
+            <div class="form-actions">
+                <button class="btn btn-white">Limpar</button>
+                <button class="btn btn-primary" id="btn-buscar">Buscar no Sinacor</button>
+            </div>
         </div>
     </div>
 
-    <div id="pane-backoffice" class="pane">
-        <div class="card card-table">
-            <div style="padding: 20px; border-bottom: 1px solid var(--border)"><h3 style="color: var(--amber); font-size: 14px; text-transform: uppercase;">Fila de Intervenção Manual</h3></div>
-            <table>
-                <thead><tr><th>Cliente</th><th>Erro da API B3</th><th>Tentativas</th><th>Ação</th></tr></thead>
-                <tbody>
-                    <tr><td>Ana Paula Mendes</td><td style="color:var(--red)">422 - CPF iniciado em 0 (Truncado)</td><td><span class="badge b-red">3/3</span></td><td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px;">Corrigir</button></td></tr>
-                    <tr><td>Carlos Eduardo</td><td style="color:var(--red)">503 - B3 API Timeout</td><td><span class="badge b-red">3/3</span></td><td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px;">Reenviar</button></td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-  </main>
+    <div id="pane-consulta" class="pane"><div class="content-card">Histórico de Consultas</div></div>
+    <div id="pane-backoffice" class="pane"><div class="content-card">Fila de Backoffice</div></div>
+    <div id="pane-relatorios" class="pane"><div class="content-card">Relatórios de Performance</div></div>
 </div>
 
 <script>
-    // Gerenciador de Abas Principal
-    function nav(id, el) {
+    function switchTab(tabId, element) {
+        // Esconder todos os panes
         document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-        const target = document.getElementById('pane-' + id);
-        if (target) target.classList.add('active');
-
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if (el) {
-            el.classList.add('active');
-        } else {
-            const sidebarBtn = document.getElementById('nav-' + id);
-            if (sidebarBtn) sidebarBtn.classList.add('active');
-        }
-    }
-
-    // Fluxo Nova Demanda
-    function openNovaDemanda() {
-        nav('nova');
-        document.getElementById('id-input').value = '';
-        toStep(1);
-    }
-
-    function toStep(n) {
-        document.querySelectorAll('#pane-nova .card').forEach(c => c.style.display = 'none');
-        document.getElementById('step' + n).style.display = 'block';
+        // Mostrar o selecionado
+        document.getElementById('pane-' + tabId).classList.add('active');
         
-        for (let i = 1; i <= 3; i++) {
-            const stepHeader = document.getElementById('s' + i);
-            if (i < n) stepHeader.className = 'step done';
-            else if (i === n) stepHeader.className = 'step active';
-            else stepHeader.className = 'step';
+        // Estilo do botão
+        if(element) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
         }
     }
 
-    // Filtros e Pesquisa
-    function filterStatus(s) {
-        document.querySelectorAll('#tbl-body tr').forEach(tr => {
-            tr.style.display = (s === 'todos' || tr.dataset.s === s) ? '' : 'none';
-        });
-    }
+    function validateForm() {
+        const inputs = document.querySelectorAll('input');
+        const btn = document.getElementById('btn-buscar');
+        let hasValue = false;
+        
+        inputs.forEach(i => { if(i.value.length > 3) hasValue = true; });
 
-    function filterTbl(q) {
-        q = q.toLowerCase();
-        document.querySelectorAll('#tbl-body tr').forEach(tr => {
-            tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
-        });
+        if(hasValue) {
+            btn.classList.add('enabled');
+            btn.innerText = "Buscar no Sinacor";
+        } else {
+            btn.classList.remove('enabled');
+        }
     }
 </script>
+
 </body>
 </html>
