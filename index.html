@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Cadastro CETIP — Warren</title>
+    <title>Warren — CETIP Gateway</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
     <style>
         :root {
@@ -19,24 +19,25 @@
         *{box-sizing:border-box;margin:0;padding:0}
         body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh}
         
-        /* Layout */
         .shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
         .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:24px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px}
         .main{padding:32px 36px;overflow-y:auto}
 
         /* Sidebar */
-        .brand{padding:8px 12px;margin-bottom:20px}
-        .brand-name{font-size:14px;font-weight:600;color:var(--accent)}
+        .brand{padding:8px 12px;margin-bottom:20px; border-bottom: 1px solid var(--border); padding-bottom: 20px;}
+        .brand-name{font-size:14px;font-weight:700;color:var(--text); letter-spacing: 1px;}
+        .brand-sub{font-size:10px; color:var(--text3); font-family: 'DM Mono'}
         .nav-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;padding:16px 12px 6px}
-        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius);cursor:pointer;color:var(--text2);text-decoration:none;transition:0.2s}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius);cursor:pointer;color:var(--text2);text-decoration:none;transition:0.2s; font-size: 13px;}
         .nav-item:hover, .nav-item.active{background:var(--surface3);color:var(--text)}
         .nav-badge{margin-left:auto;background:var(--amber-bg);color:var(--amber);padding:2px 6px;border-radius:10px;font-size:10px}
 
-        /* Stats */
+        /* Dashboard & Stats */
+        .page-header{display:flex; justify-content: space-between; align-items: center; margin-bottom: 30px;}
         .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
         .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;cursor:pointer;transition:0.2s}
-        .stat:hover{transform:translateY(-2px);background:var(--surface2)}
-        .stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;margin-bottom:8px}
+        .stat:hover{transform:translateY(-2px);border-color: var(--border2)}
+        .stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;margin-bottom:8px; font-weight: 600;}
         .stat-val{font-size:24px;font-weight:600;font-family:'DM Mono'}
 
         /* Stepper */
@@ -57,159 +58,194 @@
         /* Forms */
         .field{margin-bottom:15px;display:flex;flex-direction:column;gap:5px}
         .field label{font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:600}
-        input, select{height:38px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;color:var(--text);outline:none}
+        input{height:42px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;color:var(--text);outline:none; width: 100%;}
         input:focus{border-color:var(--accent)}
 
-        .btn{padding:10px 20px;border-radius:var(--radius);border:none;cursor:pointer;font-weight:600;transition:0.2s}
+        .btn{padding:10px 20px;border-radius:var(--radius);border:none;cursor:pointer;font-weight:600;transition:0.2s; display: inline-flex; align-items: center; gap: 8px;}
         .btn-primary{background:var(--accent);color:var(--bg)}
+        .btn-primary:hover{background: var(--accent2)}
         .btn-secondary{background:var(--surface3);color:var(--text2)}
         
         table{width:100%;border-collapse:collapse}
         thead th{text-align:left;padding:12px;font-size:10px;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)}
         tbody td{padding:12px;border-bottom:1px solid var(--border);color:var(--text2);font-size:13px}
-        .td-name{color:var(--text);font-weight:500}
-        .badge{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:600}
+        .badge{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:600; font-family: 'DM Mono';}
         .b-green{background:var(--green-bg);color:var(--green)}
+        .b-red{background:var(--red-bg);color:var(--red)}
     </style>
 </head>
 <body>
 
 <div class="shell">
   <aside class="sidebar">
-    <div class="brand"><div class="brand-name">WARREN CETIP</div></div>
-    <div class="nav-label">Menu</div>
-    <a class="nav-item active" id="nav-nova" onclick="nav('nova',this)">Nova demanda</a>
+    <div class="brand">
+        <div class="brand-name">WARREN</div>
+        <div class="brand-sub">GATEWAY CETIP</div>
+    </div>
+    
+    <div class="nav-label">Main</div>
+    <a class="nav-item active" id="nav-dashboard" onclick="nav('dashboard',this)">Dashboard</a>
     <a class="nav-item" id="nav-consulta" onclick="nav('consulta',this)">Consulta</a>
     <a class="nav-item" id="nav-backoffice" onclick="nav('backoffice',this)">Backoffice <span class="nav-badge">3</span></a>
   </aside>
 
   <main class="main">
-    <div class="stats">
-      <div class="stat" onclick="nav('consulta'); filterStatus('concluido')">
-        <div class="stat-label">Concluídos</div>
-        <div class="stat-val">47</div>
-      </div>
-      <div class="stat" onclick="nav('backoffice')">
-        <div class="stat-label">Fila Backoffice</div>
-        <div class="stat-val" style="color:var(--amber)">3</div>
-      </div>
-    </div>
-
-    <div id="pane-nova" class="pane active">
-      <div id="flow-start" class="card" style="text-align:center; padding:60px 20px">
-        <h2>Registro Manual B3 Balcão</h2>
-        <p style="color:var(--text3); margin:10px 0 20px">Inicie o fluxo de sincronização Sinacor → CETIP.</p>
-        <button class="btn btn-primary" onclick="startFlow()">Começar Nova Demanda</button>
+    
+    <div id="pane-dashboard" class="pane active">
+      <div class="page-header">
+        <div>
+            <h2 style="font-size: 24px;">Dashboard</h2>
+            <p style="color: var(--text3)">Visão geral das integrações Sinacor → B3</p>
+        </div>
+        <button class="btn btn-primary" onclick="openNovaDemanda()">+ Nova Demanda</button>
       </div>
 
-      <div id="flow-steps" style="display:none">
-        <div class="stepper">
-          <div class="step active" id="s1"><div class="step-n">1</div> Identificação</div>
-          <div class="line"></div>
-          <div class="step" id="s2"><div class="step-n">2</div> Dados Sinacor</div>
-          <div class="line"></div>
-          <div class="step" id="s3"><div class="step-n">3</div> Envio</div>
+      <div class="stats">
+        <div class="stat" onclick="nav('consulta'); filterStatus('concluido')">
+          <div class="stat-label">Concluídos Hoje</div>
+          <div class="stat-val">47</div>
         </div>
-
-        <div id="step1" class="card">
-          <h3>Identificação</h3>
-          <div class="field" style="margin-top:20px">
-            <label>Código Sinacor ou CPF</label>
-            <input type="text" id="find-input" placeholder="Ex: 0012345">
-          </div>
-          <button class="btn btn-primary" onclick="toStep(2)">Buscar Cliente</button>
+        <div class="stat" onclick="nav('consulta'); filterStatus('processando')">
+          <div class="stat-label">Processando</div>
+          <div class="stat-val">8</div>
         </div>
-
-        <div id="step2" class="card" style="display:none">
-          <h3>Confirmar Dados</h3>
-          <div style="background:var(--surface2); padding:15px; border-radius:10px; margin:15px 0">
-            <p><strong>Nome:</strong> João Carlos Almeida</p>
-            <p><strong>CPF:</strong> 123.456.789-00</p>
-          </div>
-          <button class="btn btn-secondary" onclick="toStep(1)">Voltar</button>
-          <button class="btn btn-primary" onclick="toStep(3)">Enviar para CETIP</button>
+        <div class="stat" onclick="nav('backoffice')">
+          <div class="stat-label">Fila Backoffice</div>
+          <div class="stat-val" style="color:var(--amber)">3</div>
         </div>
-
-        <div id="step3" class="card" style="display:none; text-align:center">
-          <div style="font-size:40px; color:var(--green)">✓</div>
-          <h3>Sucesso!</h3>
-          <p style="color:var(--text3)">ID CETIP: INV-2024-099</p>
-          <button class="btn btn-primary" style="margin-top:20px" onclick="resetFlow()">Nova Demanda</button>
+        <div class="stat">
+          <div class="stat-label">Sucesso</div>
+          <div class="stat-val">94%</div>
         </div>
       </div>
-    </div>
 
-    <div id="pane-consulta" class="pane">
-      <div class="card card-table">
-        <div class="table-toolbar" style="padding:20px; display:flex; gap:10px">
-            <input type="text" class="search-input" placeholder="Pesquisar..." oninput="filterTbl(this.value)">
-            <input type="date" class="date-input">
-            <input type="date" class="date-input">
-        </div>
+      <div class="card">
+        <h3 style="margin-bottom: 15px; font-size: 14px; color: var(--text3); text-transform: uppercase;">Atividades Recentes</h3>
         <table>
-          <thead><tr><th>Cliente</th><th>Documento</th><th>Data</th><th>Status</th></tr></thead>
-          <tbody id="tbl-body">
-            <tr data-s="concluido"><td>João Carlos</td><td>123.456.789-00</td><td>15/04/2024</td><td><span class="badge b-green">Concluído</span></td></tr>
-          </tbody>
+            <thead><tr><th>Cliente</th><th>Documento</th><th>Status</th></tr></thead>
+            <tbody>
+                <tr><td>João Carlos Almeida</td><td style="font-family: 'DM Mono'">123.***.***-00</td><td><span class="badge b-green">Sucesso</span></td></tr>
+                <tr><td>Maria Fernanda</td><td style="font-family: 'DM Mono'">987.***.***-00</td><td><span class="badge b-green">Sucesso</span></td></tr>
+            </tbody>
         </table>
       </div>
     </div>
 
-    <div id="pane-backoffice" class="pane">
-        <div class="card">
-            <h3 style="color:var(--amber); margin-bottom:15px">Fila Backoffice</h3>
+    <div id="pane-nova" class="pane">
+      <div class="page-header">
+        <h2 style="font-size: 24px;">Nova Demanda Manual</h2>
+        <button class="btn btn-secondary" onclick="nav('dashboard')">Cancelar</button>
+      </div>
+
+      <div class="stepper">
+        <div class="step active" id="s1"><div class="step-n">1</div> Identificação</div>
+        <div class="line"></div>
+        <div class="step" id="s2"><div class="step-n">2</div> Dados Sinacor</div>
+        <div class="line"></div>
+        <div class="step" id="s3"><div class="step-n">3</div> Finalização</div>
+      </div>
+
+      <div id="step1" class="card">
+        <h3 style="margin-bottom: 20px;">Busca de Cliente</h3>
+        <div class="field">
+          <label>Insira o ID Sinacor ou CPF</label>
+          <input type="text" id="id-input" placeholder="0012345 ou 000.000.000-00">
+        </div>
+        <button class="btn btn-primary" onclick="toStep(2)">Validar no Sinacor</button>
+      </div>
+
+      <div id="step2" class="card" style="display:none">
+        <h3>Dados Encontrados</h3>
+        <div style="background:var(--surface2); padding:20px; border-radius:10px; margin:20px 0; line-height: 2;">
+          <p style="color: var(--text3)">CLIENTE</p>
+          <p><strong>Nome:</strong> João Carlos Almeida</p>
+          <p><strong>Documento:</strong> 123.456.789-00</p>
+          <p><strong>Conta Sinacor:</strong> 0012345</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" onclick="toStep(1)">Voltar</button>
+            <button class="btn btn-primary" onclick="toStep(3)">Confirmar Envio B3</button>
+        </div>
+      </div>
+
+      <div id="step3" class="card" style="display:none; text-align:center; padding: 40px;">
+        <div style="font-size:50px; color:var(--green); margin-bottom: 20px;">✓</div>
+        <h3 style="margin-bottom: 10px;">Enviado com Sucesso</h3>
+        <p style="color:var(--text3)">ID de Registro B3: <strong>INV-2024-X92</strong></p>
+        <button class="btn btn-primary" style="margin-top:30px" onclick="resetForm()">Fazer Novo Registro</button>
+      </div>
+    </div>
+
+    <div id="pane-consulta" class="pane">
+        <div class="card card-table">
+            <div style="padding: 20px; border-bottom: 1px solid var(--border)"><h3>Histórico de Consultas</h3></div>
             <table>
-                <thead><tr><th>Cliente</th><th>Erro</th><th>Ação</th></tr></thead>
-                <tbody>
-                    <tr><td>Ana Paula</td><td style="color:var(--red)">CPF truncado (Iniciado em 0)</td><td><button class="btn-sm">Corrigir</button></td></tr>
-                    <tr><td>Carlos Nunes</td><td style="color:var(--red)">Timeout API B3</td><td><button class="btn-sm">Reenviar</button></td></tr>
+                <thead><tr><th>Cliente</th><th>Data</th><th>Status</th></tr></thead>
+                <tbody id="tbl-body">
+                    <tr><td>Roberto Lima</td><td>15/04/2024</td><td><span class="badge b-green">Concluído</span></td></tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <div id="pane-backoffice" class="pane">
+        <div class="card card-table">
+            <div style="padding: 20px; border-bottom: 1px solid var(--border)"><h3 style="color: var(--amber)">Fila de Erros</h3></div>
+            <table>
+                <thead><tr><th>Cliente</th><th>Erro Detectado</th><th>Ação</th></tr></thead>
+                <tbody>
+                    <tr><td>Ana Paula</td><td style="color:var(--red)">CPF iniciado em 0 (Truncado)</td><td><button class="btn btn-primary" style="padding: 4px 10px; font-size: 11px;">Corrigir</button></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
   </main>
 </div>
 
 <script>
+    // Navegação Principal
     function nav(id, el) {
         document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-        document.getElementById('pane-' + id).classList.add('active');
+        const target = document.getElementById('pane-' + id);
+        if (target) target.classList.add('active');
+
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        if (el) el.classList.add('active'); else document.getElementById('nav-' + id).classList.add('active');
+        if (el) {
+            el.classList.add('active');
+        } else {
+            const sidebarBtn = document.getElementById('nav-' + id);
+            if (sidebarBtn) sidebarBtn.classList.add('active');
+        }
     }
 
-    function startFlow() {
-        document.getElementById('flow-start').style.display = 'none';
-        document.getElementById('flow-steps').style.display = 'block';
+    // Abre o formulário vindo de qualquer lugar
+    function openNovaDemanda() {
+        nav('nova');
+        resetForm();
     }
 
+    // Controle do Stepper (Formulário)
     function toStep(n) {
-        [1,2,3].forEach(i => document.getElementById('step'+i).style.display = 'none');
-        document.getElementById('step'+n).style.display = 'block';
+        document.querySelectorAll('#pane-nova .card').forEach(c => c.style.display = 'none');
+        document.getElementById('step' + n).style.display = 'block';
         
-        [1,2,3].forEach(i => {
-            const s = document.getElementById('s'+i);
-            s.className = 'step ' + (i < n ? 'done' : i === n ? 'active' : '');
-        });
+        for (let i = 1; i <= 3; i++) {
+            const stepHeader = document.getElementById('s' + i);
+            if (i < n) stepHeader.className = 'step done';
+            else if (i === n) stepHeader.className = 'step active';
+            else stepHeader.className = 'step';
+        }
     }
 
-    function resetFlow() {
-        document.getElementById('flow-start').style.display = 'block';
-        document.getElementById('flow-steps').style.display = 'none';
+    function resetForm() {
+        document.getElementById('id-input').value = '';
         toStep(1);
     }
 
     function filterStatus(s) {
-        document.querySelectorAll('#tbl-body tr').forEach(tr => {
-            tr.style.display = (s === 'todos' || tr.dataset.s === s) ? '' : 'none';
-        });
-    }
-
-    function filterTbl(q) {
-        q = q.toLowerCase();
-        document.querySelectorAll('#tbl-body tr').forEach(tr => {
-            tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
-        });
+        // Simulação de filtro para o protótipo
+        console.log("Filtrando por: " + s);
     }
 </script>
 </body>
