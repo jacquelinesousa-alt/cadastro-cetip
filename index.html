@@ -40,7 +40,7 @@
         .stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;margin-bottom:8px; font-weight: 600;}
         .stat-val{font-size:24px;font-weight:600;font-family:'DM Mono'}
 
-        /* Stepper */
+        /* Stepper (Formulário) */
         .stepper{display:flex;align-items:center;margin-bottom:30px;gap:10px}
         .step{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:12px}
         .step.active{color:var(--accent)}
@@ -55,23 +55,28 @@
         .pane.active{display:block}
         .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px}
         
-        /* Forms */
+        /* Inputs & Buttons */
         .field{margin-bottom:15px;display:flex;flex-direction:column;gap:5px}
         .field label{font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:600}
-        input{height:42px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;color:var(--text);outline:none; width: 100%;}
+        input, select{height:42px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;color:var(--text);outline:none; width: 100%;}
         input:focus{border-color:var(--accent)}
 
         .btn{padding:10px 20px;border-radius:var(--radius);border:none;cursor:pointer;font-weight:600;transition:0.2s; display: inline-flex; align-items: center; gap: 8px;}
         .btn-primary{background:var(--accent);color:var(--bg)}
-        .btn-primary:hover{background: var(--accent2)}
         .btn-secondary{background:var(--surface3);color:var(--text2)}
         
+        /* Table Style */
         table{width:100%;border-collapse:collapse}
         thead th{text-align:left;padding:12px;font-size:10px;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border)}
         tbody td{padding:12px;border-bottom:1px solid var(--border);color:var(--text2);font-size:13px}
         .badge{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:600; font-family: 'DM Mono';}
         .b-green{background:var(--green-bg);color:var(--green)}
         .b-red{background:var(--red-bg);color:var(--red)}
+
+        /* Timeline / Logs */
+        .tl-item{display:flex;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border)}
+        .tl-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+        .tl-success{background:var(--green)}.tl-info{background:var(--blue)}.tl-danger{background:var(--red)}
     </style>
 </head>
 <body>
@@ -86,7 +91,7 @@
     <div class="nav-label">Main</div>
     <a class="nav-item active" id="nav-dashboard" onclick="nav('dashboard',this)">Dashboard</a>
     <a class="nav-item" id="nav-consulta" onclick="nav('consulta',this)">Consulta</a>
-    <a class="nav-item" id="nav-backoffice" onclick="nav('backoffice',this)">Backoffice <span class="nav-badge">3</span></a>
+    <a class="nav-item" id="nav-backoffice" onclick="nav('backoffice',this)">Backoffice <span class="nav-badge" id="backoffice-count">3</span></a>
   </aside>
 
   <main class="main">
@@ -120,12 +125,12 @@
       </div>
 
       <div class="card">
-        <h3 style="margin-bottom: 15px; font-size: 14px; color: var(--text3); text-transform: uppercase;">Atividades Recentes</h3>
+        <h3 style="margin-bottom: 15px; font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px;">Atividades Recentes</h3>
         <table>
-            <thead><tr><th>Cliente</th><th>Documento</th><th>Status</th></tr></thead>
+            <thead><tr><th>Cliente</th><th>Documento</th><th>Horário</th><th>Status</th></tr></thead>
             <tbody>
-                <tr><td>João Carlos Almeida</td><td style="font-family: 'DM Mono'">123.***.***-00</td><td><span class="badge b-green">Sucesso</span></td></tr>
-                <tr><td>Maria Fernanda</td><td style="font-family: 'DM Mono'">987.***.***-00</td><td><span class="badge b-green">Sucesso</span></td></tr>
+                <tr><td class="td-name">João Carlos Almeida</td><td>123.***.***-00</td><td>09:42</td><td><span class="badge b-green">Sucesso</span></td></tr>
+                <tr><td class="td-name">Maria Fernanda Costa</td><td>987.***.***-00</td><td>09:10</td><td><span class="badge b-green">Sucesso</span></td></tr>
             </tbody>
         </table>
       </div>
@@ -142,47 +147,56 @@
         <div class="line"></div>
         <div class="step" id="s2"><div class="step-n">2</div> Dados Sinacor</div>
         <div class="line"></div>
-        <div class="step" id="s3"><div class="step-n">3</div> Finalização</div>
+        <div class="step" id="s3"><div class="step-n">3</div> Envio CETIP</div>
       </div>
 
       <div id="step1" class="card">
-        <h3 style="margin-bottom: 20px;">Busca de Cliente</h3>
+        <h3 style="margin-bottom: 20px;">Identificação do Cliente</h3>
+        <p style="color: var(--text3); margin-bottom: 20px;">Informe o código Sinacor ou CPF para extrair os dados automaticamente.</p>
         <div class="field">
-          <label>Insira o ID Sinacor ou CPF</label>
-          <input type="text" id="id-input" placeholder="0012345 ou 000.000.000-00">
+          <label>ID Sinacor ou CPF</label>
+          <input type="text" id="id-input" placeholder="Ex: 0012345 ou 123.456.789-00">
         </div>
-        <button class="btn btn-primary" onclick="toStep(2)">Validar no Sinacor</button>
+        <button class="btn btn-primary" onclick="toStep(2)">Buscar no Sinacor</button>
       </div>
 
       <div id="step2" class="card" style="display:none">
         <h3>Dados Encontrados</h3>
         <div style="background:var(--surface2); padding:20px; border-radius:10px; margin:20px 0; line-height: 2;">
-          <p style="color: var(--text3)">CLIENTE</p>
           <p><strong>Nome:</strong> João Carlos Almeida</p>
-          <p><strong>Documento:</strong> 123.456.789-00</p>
-          <p><strong>Conta Sinacor:</strong> 0012345</p>
+          <p><strong>CPF:</strong> 123.456.789-00</p>
+          <p><strong>Endereço:</strong> Rua das Flores, 142 - SP</p>
+          <p><strong>Participante B3:</strong> 549300ABCD12345</p>
         </div>
         <div style="display: flex; gap: 10px;">
             <button class="btn btn-secondary" onclick="toStep(1)">Voltar</button>
-            <button class="btn btn-primary" onclick="toStep(3)">Confirmar Envio B3</button>
+            <button class="btn btn-primary" onclick="toStep(3)">Confirmar e Enviar</button>
         </div>
       </div>
 
-      <div id="step3" class="card" style="display:none; text-align:center; padding: 40px;">
+      <div id="step3" class="card" style="display:none; padding: 40px; text-align: center;">
         <div style="font-size:50px; color:var(--green); margin-bottom: 20px;">✓</div>
-        <h3 style="margin-bottom: 10px;">Enviado com Sucesso</h3>
-        <p style="color:var(--text3)">ID de Registro B3: <strong>INV-2024-X92</strong></p>
-        <button class="btn btn-primary" style="margin-top:30px" onclick="resetForm()">Fazer Novo Registro</button>
+        <h3>Registro Concluído</h3>
+        <p style="color:var(--text3)">O comitente foi registrado no Balcão NoMe.</p>
+        <p style="font-family: 'DM Mono'; margin-top: 10px;">ID CETIP: INV-2024-X92</p>
+        <button class="btn btn-primary" style="margin-top:30px" onclick="openNovaDemanda()">Novo Registro</button>
       </div>
     </div>
 
     <div id="pane-consulta" class="pane">
         <div class="card card-table">
-            <div style="padding: 20px; border-bottom: 1px solid var(--border)"><h3>Histórico de Consultas</h3></div>
+            <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 14px; text-transform: uppercase;">Histórico de Consultas</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="date" class="date-input" style="width: auto; height: 32px;">
+                    <input type="text" placeholder="Filtrar..." style="width: 150px; height: 32px;" oninput="filterTbl(this.value)">
+                </div>
+            </div>
             <table>
-                <thead><tr><th>Cliente</th><th>Data</th><th>Status</th></tr></thead>
+                <thead><tr><th>Cliente</th><th>Documento / Sinacor</th><th>Data</th><th>Status</th></tr></thead>
                 <tbody id="tbl-body">
-                    <tr><td>Roberto Lima</td><td>15/04/2024</td><td><span class="badge b-green">Concluído</span></td></tr>
+                    <tr data-s="concluido"><td>João Carlos Almeida</td><td style="font-family: 'DM Mono'">123.456.789-00 / 0012345</td><td>15/04/2024</td><td><span class="badge b-green">Concluído</span></td></tr>
+                    <tr data-s="processando"><td>Roberto Souza Lima</td><td style="font-family: 'DM Mono'">456.123.789-00 / 0054321</td><td>15/04/2024</td><td><span class="badge b-blue">Processando</span></td></tr>
                 </tbody>
             </table>
         </div>
@@ -190,11 +204,12 @@
 
     <div id="pane-backoffice" class="pane">
         <div class="card card-table">
-            <div style="padding: 20px; border-bottom: 1px solid var(--border)"><h3 style="color: var(--amber)">Fila de Erros</h3></div>
+            <div style="padding: 20px; border-bottom: 1px solid var(--border)"><h3 style="color: var(--amber); font-size: 14px; text-transform: uppercase;">Fila de Intervenção Manual</h3></div>
             <table>
-                <thead><tr><th>Cliente</th><th>Erro Detectado</th><th>Ação</th></tr></thead>
+                <thead><tr><th>Cliente</th><th>Erro da API B3</th><th>Tentativas</th><th>Ação</th></tr></thead>
                 <tbody>
-                    <tr><td>Ana Paula</td><td style="color:var(--red)">CPF iniciado em 0 (Truncado)</td><td><button class="btn btn-primary" style="padding: 4px 10px; font-size: 11px;">Corrigir</button></td></tr>
+                    <tr><td>Ana Paula Mendes</td><td style="color:var(--red)">422 - CPF iniciado em 0 (Truncado)</td><td><span class="badge b-red">3/3</span></td><td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px;">Corrigir</button></td></tr>
+                    <tr><td>Carlos Eduardo</td><td style="color:var(--red)">503 - B3 API Timeout</td><td><span class="badge b-red">3/3</span></td><td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px;">Reenviar</button></td></tr>
                 </tbody>
             </table>
         </div>
@@ -204,7 +219,7 @@
 </div>
 
 <script>
-    // Navegação Principal
+    // Gerenciador de Abas Principal
     function nav(id, el) {
         document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
         const target = document.getElementById('pane-' + id);
@@ -219,13 +234,13 @@
         }
     }
 
-    // Abre o formulário vindo de qualquer lugar
+    // Fluxo Nova Demanda
     function openNovaDemanda() {
         nav('nova');
-        resetForm();
+        document.getElementById('id-input').value = '';
+        toStep(1);
     }
 
-    // Controle do Stepper (Formulário)
     function toStep(n) {
         document.querySelectorAll('#pane-nova .card').forEach(c => c.style.display = 'none');
         document.getElementById('step' + n).style.display = 'block';
@@ -238,14 +253,18 @@
         }
     }
 
-    function resetForm() {
-        document.getElementById('id-input').value = '';
-        toStep(1);
+    // Filtros e Pesquisa
+    function filterStatus(s) {
+        document.querySelectorAll('#tbl-body tr').forEach(tr => {
+            tr.style.display = (s === 'todos' || tr.dataset.s === s) ? '' : 'none';
+        });
     }
 
-    function filterStatus(s) {
-        // Simulação de filtro para o protótipo
-        console.log("Filtrando por: " + s);
+    function filterTbl(q) {
+        q = q.toLowerCase();
+        document.querySelectorAll('#tbl-body tr').forEach(tr => {
+            tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
     }
 </script>
 </body>
